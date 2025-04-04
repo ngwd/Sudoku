@@ -9,10 +9,10 @@ function App() {
     <div>
       <div className="bg-blue-500 text-white p-4">If Tailwind works, it shows blue</div>
       <h2>Grid Mode:</h2>
-      <NumberTile  numbers={[1, 2, 6, 9]} />
+      <NumberTile numbers={[1, 2, 6, 9]} />
 
-      <h2>Single Mode:</h2>
-      <NumberTile numbers={[4]} />
+      <h2>Tile Mode:</h2>
+      <NumberTile numbers={[]} numberTile={4} mode='t' />
     </div>
   );
 }

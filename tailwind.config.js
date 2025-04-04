@@ -7,5 +7,26 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    function({ addComponents }) {
+      addComponents({
+        '.hide-number-arrows': {
+          '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+            '-webkit-appearance': 'none',
+            margin: '0',
+          },
+          '&[type=number]': {
+            '-moz-appearance': 'textfield',
+          },
+        },
+      })
+    },
+    function ({ addUtilities }) {
+      addUtilities({
+        '.caret-transparent': {
+          caretColor: 'transparent',
+        },
+      });
+    }
+  ],
 }
