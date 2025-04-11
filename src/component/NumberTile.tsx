@@ -4,14 +4,21 @@ interface NumberTileProps {
   numbers?: (number|null)[]; // For grid mode
   numberTile?: (number|null);   // For tile mode
   mode?: 'g' | 't';
+  pencilMode?: boolean;
+  tabIndex?:number;
+  selected?:boolean;
+  onClick?: ()=>void;
 };
 
 const NumberTile: React.FC<NumberTileProps> = ({
   numbers = undefined,
   numberTile = null,
   mode = 'g',
+  pencilMode = false,
+  tabIndex = 0,
+  selected = false,
+  onClick = ()=>{},
 }) => {
-  const [isSelected, setIsSelected] = useState(false);
   const [numberForTile, setNumberForTile] = useState<number | null>(null);
   const [numbersForGrid, setNumbersForGrid] = useState<(number|null) [] | undefined>(undefined);
 
@@ -23,11 +30,11 @@ const NumberTile: React.FC<NumberTileProps> = ({
     setNumbersForGrid(arr);
   }, []);
 
-  const handleClick = () => {
-    setIsSelected(!isSelected);
-  };
+  useEffect(()=>{
+    console.log("pencil mode is ", pencilMode);
+  }, [pencilMode]);
 
-  const borderColor = isSelected ? 'border-black' : 'border-gray-300';
+  const borderColor = selected? 'border-black' : 'border-gray-300';
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (mode === 't') return; 
     const key = e.key;
@@ -45,11 +52,11 @@ const NumberTile: React.FC<NumberTileProps> = ({
 
   return (
     <div
-      tabIndex={0}  // make it focusable, so onKeyDown can be triggered
+      tabIndex={tabIndex}  // make it focusable, so onKeyDown can be triggered
       className={`w-[60px] h-[60px] text-center justify-center ${mode==='g'?'p-1':''} bg-white border ${borderColor} ${
         mode === 'g' ? 'grid grid-cols-3 grid-rows-3 gap-1' : ''
       }`}
-      onClick={handleClick}
+      onClick={onClick}
       onKeyDown={handleKeyDown}
     >
       {mode === 'g' ? 
