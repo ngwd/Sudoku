@@ -7,6 +7,7 @@ interface NumberTileProps {
   pencilMode?: boolean;
   tabIndex?:number;
   selected?:boolean;
+  highlighted?:boolean;
   onClick?: ()=>void;
 };
 
@@ -17,6 +18,7 @@ const NumberTile: React.FC<NumberTileProps> = ({
   pencilMode = false,
   tabIndex = 0,
   selected = false,
+  highlighted = false,
   onClick = ()=>{},
 }) => {
   const [numberForTile, setNumberForTile] = useState<number | null>(null);
@@ -35,12 +37,12 @@ const NumberTile: React.FC<NumberTileProps> = ({
   }, [pencilMode]);
 
   const borderColor = selected? 'border-black' : 'border-gray-300';
+  const bgColor = highlighted? 'bg-blue-100' : 'bg-white';
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (mode === 't') return; 
     const key = e.key;
     if (/^[1-9]$/.test(key)) {
       const num = parseInt(key);
-      console.log("handlekeydown ", num);
       setNumbersForGrid((prevNums: (number|null)[]|undefined) => {
         if (!prevNums) return prevNums;
         let currNums = [...prevNums];
@@ -53,7 +55,7 @@ const NumberTile: React.FC<NumberTileProps> = ({
   return (
     <div
       tabIndex={tabIndex}  // make it focusable, so onKeyDown can be triggered
-      className={`w-[60px] h-[60px] text-center justify-center ${mode==='g'?'p-1':''} bg-white border ${borderColor} ${
+      className={`w-[60px] h-[60px] text-center justify-center ${mode==='g'?'p-1':''} ${bgColor} border ${borderColor} ${
         mode === 'g' ? 'grid grid-cols-3 grid-rows-3 gap-1' : ''
       }`}
       onClick={onClick}

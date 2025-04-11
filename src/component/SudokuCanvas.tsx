@@ -8,9 +8,13 @@ const SudokuCanvas : React.FC<SudokuCanvasProps> = ({
   pencilMode = false,
 }) => {
   const [sudokuArray, setSudokuArray] = useState<(number|null) [][] | undefined>(undefined);
+
   const [selectedIndex, setSelectedIndex] = useState<number|undefined> (undefined);
 
-  useEffect(()=> {
+  const [curRow, setCurRow] = useState<number | undefined> (undefined);
+  const [curCol, setCurCol] = useState<number | undefined> (undefined);
+
+  useEffect(() => {
     let arr:(number|null)[][] = [...Array(9)].map(_ => Array(9).fill(1)); 
     setSudokuArray(arr);
   }, []);
@@ -20,10 +24,18 @@ const SudokuCanvas : React.FC<SudokuCanvasProps> = ({
       {sudokuArray?.map((row, rowIndex) => 
         row.map((value, colIndex) => {
           let index = rowIndex*9+colIndex;
+          let highlighted = rowIndex == curRow || colIndex == curCol;
           return <NumberTile numberTile={value} 
             tabIndex={index} 
             selected={selectedIndex === index} 
-            onClick={()=>setSelectedIndex(index)} />;
+            highlighted={highlighted}
+            onClick={()=>{
+              console.log(rowIndex, colIndex);
+              setCurCol(colIndex);
+              setCurRow(rowIndex);
+              setSelectedIndex(index);
+            }} 
+            />;
           }))
       }
     </div>
