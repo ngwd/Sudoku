@@ -10,16 +10,8 @@ function App() {
     <div>
       <div className="bg-blue-500 text-white p-4">If Tailwind works, it shows blue</div>
       <Toggle onToggle={()=>setPencilMode(!pencilMode)}/>
-
-      <h2>Grid Mode:</h2>
-      <NumberTile mode='g' />
-      <NumberTile numbers={[1, 2, 6, 9]} pencilMode={pencilMode}/>
-
-      <h2>Tile Mode:</h2>
-      <NumberTile mode='t' />
-
-      <h2>Canvas:</h2>
-      <SudokuCanvas pencilMode={pencilMode}/>
+        <NumberTile selected={true} pencilMode={pencilMode}/>
+        <SudokuCanvas pencilMode={pencilMode}/>
     </div>
   );
 }

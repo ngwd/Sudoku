@@ -31,6 +31,7 @@ const SudokuCanvas : React.FC<SudokuCanvasProps> = ({
             <NumberTile numberTile={value} 
               tabIndex={index} 
               selected={selectedIndex === index} 
+              pencilMode={pencilMode}
               highlighted={highlighted}
               onClick={()=>{
                 if (index === selectedIndex) return;

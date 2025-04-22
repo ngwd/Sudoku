@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 interface NumberTileProps {
   numbers?: (number|null)[]; // For grid mode
   numberTile?: (number|null);   // For tile mode
-  mode?: 'g' | 't';
   pencilMode?: boolean;
   tabIndex?:number;
   selected?:boolean;
@@ -14,7 +13,6 @@ interface NumberTileProps {
 const NumberTile: React.FC<NumberTileProps> = ({
   numbers = undefined,
   numberTile = null,
-  mode = 'g',
   pencilMode = false,
   tabIndex = 0,
   selected = false,
@@ -23,68 +21,60 @@ const NumberTile: React.FC<NumberTileProps> = ({
 }) => {
   const [numberForTile, setNumberForTile] = useState<number | null>(null);
   const [numbersForGrid, setNumbersForGrid] = useState<(number|null) [] | undefined>(undefined);
+  const [mode, setMode] = useState<'t'|'g'>('t');
 
   useEffect(()=> {
-    let arr: (number|null)[] = Array(9).fill(null);
-    if (numbers !== undefined) {
-      numbers.map(i => arr[i-1] = i);
+    if (selected) {
+      setMode(pencilMode ? 'g' : 't'); 
     }
-    setNumbersForGrid(arr);
-  }, []);
-
-  useEffect(()=>{
-    console.log("pencil mode is ", pencilMode);
   }, [pencilMode]);
 
-  const borderColor = selected? 'border-black' : 'border-gray-300';
-  const bgColor = highlighted? 'bg-blue-100' : 'bg-white';
+  const borderColor = selected ? 'border-black' : 'border-gray-300';
+  const bgColor = highlighted ? (selected? 'bg-blue-300' : 'bg-blue-100') : 'bg-white';
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (mode === 't') return; 
     const key = e.key;
+    if (pencilMode && mode === 't' || 
+        !pencilMode && mode === 'g') {
+      if (selected) {
+        let arr: (number|null)[] = Array(9).fill(null);
+        setNumbersForGrid(arr);
+        setNumberForTile(null);
+      }
+      setMode(pencilMode ? 'g': 't');
+    }
     if (/^[1-9]$/.test(key)) {
       const num = parseInt(key);
-      setNumbersForGrid((prevNums: (number|null)[]|undefined) => {
-        if (!prevNums) return prevNums;
-        let currNums = [...prevNums];
-        currNums[num-1] = currNums[num-1]===null? num: null;
-        return currNums;
-      })
+      if (mode === 'g') {
+        setNumbersForGrid((prevNums: (number|null)[]|undefined) => {
+          if (!prevNums) return prevNums;
+          let currNums = [...prevNums];
+          currNums[num-1] = currNums[num-1]===null? num: null;
+          return currNums;
+        })
+      } else {
+        setNumberForTile(num);
+      }
     }
   };
 
   return (
     <div
       tabIndex={tabIndex}  // make it focusable, so onKeyDown can be triggered
-      className={`w-[60px] h-[60px] text-center justify-center ${mode==='g'?'p-1':''} ${bgColor} border ${borderColor} ${
-        mode === 'g' ? 'grid grid-cols-3 grid-rows-3 gap-1' : ''
-      }`}
+      className={`w-[60px] h-[60px] text-center justify-center ${mode==='g' ? 'p-1' : ''} ${bgColor} border ${borderColor} 
+              ${mode === 'g' ? 'grid grid-cols-3 grid-rows-3 gap-1' : 'flex items-center justify-center'}
+              ${mode === 'g' ? 'text-sm' : 'text-3xl'}
+              `}
       onClick={onClick}
       onKeyDown={handleKeyDown}
     >
       {mode === 'g' ? 
         numbersForGrid?.map((num, index) => (
-          <div key={index} className="flex items-center justify-center"> {num !== null? num : ''}
+          <div key={index} className="flex items-center justify-center"> 
+            <span>{num !== null ? +num : ''}</span>
           </div>
         ))
-        : (
-          <input
-            type="text"
-            value={numberForTile === null ? '' : numberForTile}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (value === '') {
-                setNumberForTile(null);
-                return;
-              }
-              // Only take the last character
-              const lastChar = value.slice(-1);
-              if (/^[1-9]$/.test(lastChar)) {
-                setNumberForTile(parseInt(lastChar));
-              }
-            }}
-            className="w-full h-full text-center text-5xl caret-transparent"
-          />
-        )}
+        : <span>{numberForTile}</span>
+      }
     </div>
   );
 };
